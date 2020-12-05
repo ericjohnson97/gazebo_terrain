@@ -17,7 +17,7 @@ from PIL import Image
 import cv2
 http = urllib3.PoolManager()
 
-res = 30
+res = 17
 # url = 'http://www.thefamouspeople.com/singers.php'
 url = "http://dev.virtualearth.net/REST/v1/Elevation/Bounds?bounds=39.45312178126139,-105.66816658410795,39.475187097556585,-105.64420457918649&rows=10&cols=10&heights=sealevel&key=Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh"
 response = http.request('GET', url)
@@ -54,8 +54,14 @@ for row in range(0, res):
             (array[counter] - minnum)/(maxnum-minnum) * 255)
         counter = counter + 1
 
+cv2.imwrite('coloradoheightmap.png', picarray)
+img = cv2.imread('coloradoheightmap.png')
+dim = (1025,1025)
 
-cv2.imwrite('mypng.png', picarray)
+im_big = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+blur = cv2.GaussianBlur(im_big,(101,101),0)
+# cv.imshow("resize", im_big)
+cv2.imwrite('coloradoheightmap.png', blur)
 
 # img = Image.fromarray(picarray, 'L')
 # img.save('my.png')
