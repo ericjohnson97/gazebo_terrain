@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>IQ gazebo terrain</title>
+    <!-- <link rel="icon" type="image/png" href="img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+    </link> -->
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc40p2Df21aTlFjJ-xOeaozB69Z59oVO8&callback=initMap"></script>
+</head>
+
+<style>
+    #map {
+        height: 100%;
+    }
+
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <a class="navbar-brand" href="#">Intelligent Quads</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+        </ul>
+    </nav>
+
+
+
+
+
+
+    <div class="container">
+        <h3>Intelligent Quads Gazebo Terrain generator <b>BETA</b></h3>
+
+    </div>
+    <div id="map" height="300"></div>
+
+    <img
+        src="https://maps.googleapis.com/maps/api/staticmap?center=38.49883543661018,-106.19186874536821&zoom=12&size=400x400&maptype=satellite&key=AIzaSyDc40p2Df21aTlFjJ-xOeaozB69Z59oVO8">
+    <img
+        src="https://maps.googleapis.com/maps/api/staticmap?center=38.49883543661018,-106.19186874536821&zoom=12&size=400x400&maptype=terrain&key=AIzaSyDc40p2Df21aTlFjJ-xOeaozB69Z59oVO8">
+
+
+    <a href="https://maps.googleapis.com/maps/api/staticmap?center=38.49883543661018,-106.19186874536821&zoom=12&size=400x400&key=AIzaSyDc40p2Df21aTlFjJ-xOeaozB69Z59oVO8"
+        download>download</a>
+
+</body>
+
+<script>
+    let map;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: -34.397, lng: 150.644 },
+            zoom: 8,
+        });
+        console.log("loaded")
+    }
+</script>
+
+</html>
