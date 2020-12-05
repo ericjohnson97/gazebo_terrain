@@ -6,8 +6,8 @@
         <collision name="collision">
           <geometry>
             <heightmap>
-              <uri>model://colorado/textures/coloradoheightmap.png</uri>
-              <size>400 400 60</size>
+              <uri>model://colorado_test/textures/colorado_test_heightmap.png</uri>
+              <size>400 400 75</size>
               <pos>0 0 0</pos>
             </heightmap>
           </geometry>
@@ -17,9 +17,9 @@
             <heightmap>
               <use_terrain_paging>false</use_terrain_paging>
               <texture>
-                <diffuse>model://colorado/textures/aerial.png</diffuse>
-                <normal>model://colorado/textures/aerial.png</normal>
-                <size>400 400 60</size>
+                <diffuse>model://colorado_test/textures/colorado_test_aerial.png</diffuse>
+                <normal>model://colorado_test/textures/colorado_test_aerial.png</normal>
+                <size>400 400 75</size>
               </texture>
              <blend>
                 <min_height>2</min_height>
@@ -29,8 +29,8 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://colorado/textures/coloradoheightmap.png</uri>
-              <size>400 400 60</size>
+              <uri>model://colorado_test/textures/colorado_test_heightmap.png</uri>
+              <size>400 400 75</size>
               <pos>0 0 0</pos>
             </heightmap>
           </geometry>

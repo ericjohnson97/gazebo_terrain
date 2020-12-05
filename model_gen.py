@@ -31,17 +31,7 @@ def read_template(temp_file_name):
 def write_config_file(config_template, model_name, creator_name, email, description):
     
     try:
-        
-        # Ask for configuration data
-        # model_name = raw_input("Input the name of the model (displayed on the Gazebo insert menu):\n")
-        # print (" ")
-        # creator_name = raw_input("Input your name:\n")
-        # print (" ")
-        # email = raw_input("Input your email address:\n")
-        # print (" ")
-        # description = raw_input("Add a short description of the model:\n")
-        # print (" ")
-        
+                
         # Replace indicated values
         config_template = config_template.replace( "$MODELNAME$", model_name )
         config_template = config_template.replace( "$AUTHORNAME$", creator_name )
@@ -115,7 +105,7 @@ def main():
         write_config_file(config_template, model_name, "auto-gne", "na", "auto-gened by intelligent quads")        
         
         # Write to model.sdf
-        write_sdf_file(model_name, height_img_name, aerial_img_name, sdf_template, 129, 129, 129 )
+        write_sdf_file(model_name, height_img_name, aerial_img_name, sdf_template, 400, 400, 69 )
         
     finally:
         

@@ -15,53 +15,192 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import cv2
-http = urllib3.PoolManager()
+import navpy 
+import os
+import string
+import sys
 
-res = 17
-# url = 'http://www.thefamouspeople.com/singers.php'
-url = "http://dev.virtualearth.net/REST/v1/Elevation/Bounds?bounds=39.45312178126139,-105.66816658410795,39.475187097556585,-105.64420457918649&rows=10&cols=10&heights=sealevel&key=Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh"
-response = http.request('GET', url)
-# data = response.data
-# soup = BeautifulSoup(response.data.decode('json'))
-# print(soup)
-# print(response.json)
 
-url = "http://dev.virtualearth.net/REST/v1/Elevation/Bounds"
-payload = {'bounds': '39.45312178126139,-105.66816658410795,39.475187097556585,-105.64420457918649',
-           'rows': str(res), 'cols': str(res), 'heights': 'sealevel', 'key': 'Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh'}
-resp = requests.get(url, params=payload)
-data = json.loads(resp.text)
-# print(resp.url)
-# print(data)
-# print('')
-print(data['resourceSets'][0]['resources'][0]['elevations'])
-array = np.array(data['resourceSets'][0]['resources'][0]['elevations'])
-print('array length', len(array))
+def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m ):
+    ned_sw = [-size_m/2, -size_m/2, 0]
+    ned_ne = [ size_m/2, size_m/2, 0 ]
+    alt_ref = 0
 
-maxnum = max(array)
-print('max num', maxnum)
-minnum = min(array)
-print('min num', minnum)
 
-counter = 0
-picarray = np.empty([res, res])
-for row in range(0, res):
-    ycord = res-1 - row
-    # print(ycord)
-    for col in range(0, res):
-        # print(np.uint8((array[counter] - minnum)/maxnum * 255))
-        picarray[ycord][col] = np.uint8(
-            (array[counter] - minnum)/(maxnum-minnum) * 255)
-        counter = counter + 1
+    lla_sw = navpy.ned2lla(ned_sw, lat_ref, lon_ref, alt_ref, latlon_unit='deg', alt_unit='m', model='wgs84')
+    print(lla_sw)
 
-cv2.imwrite('coloradoheightmap.png', picarray)
-img = cv2.imread('coloradoheightmap.png')
-dim = (1025,1025)
+    lla_ne = navpy.ned2lla(ned_ne, lat_ref, lon_ref, alt_ref, latlon_unit='deg', alt_unit='m', model='wgs84')
+    print(lla_ne)
 
-im_big = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-blur = cv2.GaussianBlur(im_big,(101,101),0)
-# cv.imshow("resize", im_big)
-cv2.imwrite('coloradoheightmap.png', blur)
+    bbox = str(lla_sw[0])+","+str(lla_sw[1])+","+str(lla_ne[0])+","+str(lla_ne[1])
+    print(bbox)
 
-# img = Image.fromarray(picarray, 'L')
-# img.save('my.png')
+
+
+    http = urllib3.PoolManager()
+
+    res = 17
+    # url = 'http://www.thefamouspeople.com/singers.php'
+    url = "http://dev.virtualearth.net/REST/v1/Elevation/Bounds?bounds=39.45312178126139,-105.66816658410795,39.475187097556585,-105.64420457918649&rows=10&cols=10&heights=sealevel&key=Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh"
+    response = http.request('GET', url)
+
+    url = "http://dev.virtualearth.net/REST/v1/Elevation/Bounds"
+    payload = {'bounds': bbox,
+            'rows': str(res), 'cols': str(res), 'heights': 'sealevel', 'key': 'Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh'}
+    resp = requests.get(url, params=payload)
+    data = json.loads(resp.text)
+
+    array = np.array(data['resourceSets'][0]['resources'][0]['elevations'])
+    print('array length', len(array))
+
+    maxnum = max(array)
+    print('max num', maxnum)
+    minnum = min(array)
+    print('min num', minnum)
+
+    counter = 0
+    picarray = np.empty([res, res])
+    for row in range(0, res):
+        ycord = res-1 - row
+        # print(ycord)
+        for col in range(0, res):
+            picarray[ycord][col] = np.uint8(
+                (array[counter] - minnum)/(maxnum-minnum) * 255)
+            counter = counter + 1
+
+    cv2.imwrite(path+'/textures/'+height_img_name+'.png', picarray)
+    img = cv2.imread(path+'/textures/'+height_img_name+'.png')
+    dim = (1025,1025)
+
+    im_big = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+    blur = cv2.GaussianBlur(im_big,(501,501),0)
+    cv2.imwrite(path+'/textures/'+height_img_name+'.png', blur)
+
+    max_alt = maxnum-minnum
+    print('height diff', max_alt)
+
+    aerial_url = "https://dev.virtualearth.net/REST/v1/Imagery/Map/Aerial"
+
+    aerial_payload = {'mapArea': bbox, 'mapSize' : '1025,1025', 'fmt':'png', 'key': 'Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh'}
+    resp = requests.get(aerial_url, params=aerial_payload)
+    
+    with open(path+"/textures/"+aerial_img_name+".png", 'wb') as f:
+        f.write(resp.content)
+
+    print(aerial_url)
+
+    return max_alt
+
+def read_template(temp_file_name):
+    
+    try:
+        
+        # Open template
+        temp_file = open(temp_file_name, "r")
+        
+        # Read template
+        temp_hold_text = temp_file.read()
+        template = str(temp_hold_text)
+        
+        return template
+            
+    finally:
+        
+        # Close template
+        temp_file.close()
+        
+def write_config_file(config_template, model_name, creator_name, email, description):
+    
+    try:
+        # Replace indicated values
+        config_template = config_template.replace( "$MODELNAME$", model_name )
+        config_template = config_template.replace( "$AUTHORNAME$", creator_name )
+        config_template = config_template.replace( "$EMAILADDRESS$", email )
+        config_template = config_template.replace( "$DESCRIPTION$", description )
+        
+        # Ensure results are a string
+        config_content = str(config_template)
+        
+        # Open config file
+        target = open("model.config", "w")
+        
+        # Write to config file
+        target.write(config_content)
+
+    finally:
+        
+        # Close file
+        target.close()
+        
+def write_sdf_file(model_name, height_img_name, aerial_img_name, sdf_template, size_x, size_y, size_z):
+    
+
+    
+    # Filling in content
+    sdf_template = sdf_template.replace( "$MODELNAME$", model_name )
+    sdf_template = sdf_template.replace( "$FILENAME$", height_img_name )
+    sdf_template = sdf_template.replace( "$AERIAL_FILENAME$", aerial_img_name)
+    sdf_template = sdf_template.replace( "$SIZEX$", str(size_x) )
+    sdf_template = sdf_template.replace( "$SIZEY$", str(size_y) )
+    sdf_template = sdf_template.replace( "$SIZEZ$", str(size_z) )
+        
+    # Ensure results are a string
+    sdf_content = str(sdf_template)
+
+    # Open file
+    target = open("model.sdf", "w")
+
+    # Write to model.sdf
+    target.write(sdf_content)
+            
+    # finally:
+
+    # Close file
+    target.close()        
+        
+def main():
+    
+    try:
+    
+        
+        # Get cwd
+        setdir = os.getcwd()
+        
+        # Command line input
+        model_name = "cedar_point"
+        file_path = model_name
+        height_img_name = model_name+"_heightmap"
+        aerial_img_name = model_name+"_aerial"
+
+        size_m = 400
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+        if not os.path.exists(file_path+"/textures"):
+            os.mkdir(file_path+"/textures")
+
+        max_alt = gen_terrain( file_path, height_img_name, aerial_img_name, 29.65940870158524, -94.92315354313708, size_m )
+        
+
+        # Change to templates directory
+        os.chdir("templates")
+        
+        # Read template files
+        config_template = read_template("config_temp.txt")
+        sdf_template = read_template("sdf_temp.txt")
+        
+        # Change to model directory
+        os.chdir(setdir+"/"+file_path)
+        
+        # Write to model.config
+        write_config_file(config_template, model_name, "auto-gne", "na", "auto-gened by intelligent quads")        
+        
+        # Write to model.sdf
+        write_sdf_file(model_name, height_img_name, aerial_img_name, sdf_template, size_m, size_m, max_alt )
+        
+    finally:
+        
+        # Change back to cwd
+        os.chdir(setdir)
+
+main()
