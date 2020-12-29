@@ -82,8 +82,10 @@ def generate():
         # Change back to cwd
         os.chdir(setdir)
     print(setdir)
-    return json.dumps({'success': True, 'filename': 'cedar_point2.zip'}), 200, {'ContentType': 'application/json'}
-    # return send_from_directory(setdir, 'cedar_point2.zip', as_attachment=True)
+    send_from_directory(setdir, 'cedar_point2.zip')
+    return json.dumps({'success': True, 'filename': 'cedar_point2.zip'}), 200, {'ContentType': 'json'}
+    # return send_from_directory(setdir, 'cedar_point2.zip')
+    # return render_template("download.html")
 
 
 def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m):
