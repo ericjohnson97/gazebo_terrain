@@ -18,15 +18,6 @@ def home():
     return render_template("index.html")
 
 
-@app.route('/download', methods=['GET', 'POST'])
-def download():
-    json_data = request.get_json()
-    setdir = os.getcwd()
-    print(setdir, json_data)
-    # return json.dumps({'success': True, 'filename': 'cedar_point2.zip'}), 200, {'ContentType': 'application/json'} json_data['filename']
-    return send_from_directory('static', 'cedar_point2.zip', as_attachment=True)
-
-
 @app.route('/generate', methods=['GET', 'POST'])
 def generate():
     json_data = request.get_json()
@@ -38,7 +29,7 @@ def generate():
         setdir = os.getcwd()
 
         # Command line input
-        model_name = "cedar_point2"
+        model_name = json_data['model_name']
         file_path = "static/" + model_name
         height_img_name = model_name+"_heightmap"
         aerial_img_name = model_name+"_aerial"
@@ -70,22 +61,23 @@ def generate():
         write_sdf_file(model_name, height_img_name, aerial_img_name,
                        sdf_template, size_m, size_m, max_alt)
 
-        os.chdir(setdir)
+        os.chdir(setdir+'/static')
         # zip directory
-        zipf = zipfile.ZipFile('static/'+model_name +
-                               '.zip', 'w', zipfile.ZIP_DEFLATED)
-        zipdir('static/cedar_point2/', zipf)
+        zipf = zipfile.ZipFile(model_name + '.zip', 'w', zipfile.ZIP_DEFLATED)
+        zipdir(model_name, zipf)
         zipf.close()
+
+        os.chdir(setdir)
 
     finally:
 
         # Change back to cwd
         os.chdir(setdir)
     print(setdir)
-    send_from_directory(setdir, 'cedar_point2.zip')
-    return json.dumps({'success': True, 'filename': 'cedar_point2.zip'}), 200, {'ContentType': 'json'}
-    # return send_from_directory(setdir, 'cedar_point2.zip')
-    # return render_template("download.html")
+
+    send_from_directory(setdir+'/static', model_name+'.zip')
+    # os.remove(setdir+'/static/'+model_name+'.zip')
+    return json.dumps({'success': True, 'filename': model_name+'.zip'}), 200, {'ContentType': 'json'}
 
 
 def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m):
