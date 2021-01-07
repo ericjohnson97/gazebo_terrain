@@ -1,14 +1,7 @@
-catkin==0.7.14
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
 Flask==1.1.2
-gencpp==0.6.0
-geneus==2.2.6
-genlisp==0.4.16
-genmsg==0.5.11
-gennodejs==2.0.1
-genpy==0.6.7
 idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.2
@@ -16,11 +9,7 @@ MarkupSafe==1.1.1
 NavPy==1.0
 numpy==1.19.4
 opencv-python==4.4.0.46
-pkg-resources==0.0.0
 requests==2.25.1
-rosgraph==1.14.3
-roslib==1.14.4
-rospy==1.14.3
 urllib3==1.26.2
 Werkzeug==1.0.1
 zipfile38==0.0.3
