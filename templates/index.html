@@ -48,6 +48,10 @@
                             <label class="col-sm-8">Model Name </label>
                             <input class="col-sm-4 " id="modelName">
                         </div>
+                        <div class="row">
+                            <label class="col-sm-8">Box Side Length [m] </label>
+                            <input class="col-sm-4 " id="sideLength">
+                        </div>
                         <button type="submit">Generate</button>
                         <img style="visibility:hidden;" id="loadingImg" src="static/img/loading.gif" height="50" />
                     </form>
@@ -78,7 +82,9 @@
         var center = map.getCenter();
         var modelName = document.getElementById("modelName").value;
         console.log(modelName)
-        jsonData = { "latitude": center["latitude"], "longitude": center["longitude"], "model_name": modelName }
+        jsonData = { "latitude": center["latitude"], "longitude": center["longitude"], "model_name": modelName
+                    "sideLength": sideLength
+                }
         console.log("generating")
         $.ajax({
             type: "POST",
