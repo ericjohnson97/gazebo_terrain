@@ -12,6 +12,7 @@ import sys
 def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m):
     ned_sw = [-size_m/2, -size_m/2, 0]
     ned_ne = [size_m/2, size_m/2, 0]
+    print("ne", ned_ne)
     alt_ref = 0
 
     lla_sw = navpy.ned2lla(ned_sw, lat_ref, lon_ref, alt_ref,

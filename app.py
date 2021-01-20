@@ -35,8 +35,8 @@ def generate():
         file_path = "static/" + model_name
         height_img_name = model_name+"_heightmap"
         aerial_img_name = model_name+"_aerial"
-
-        size_m = json_data['sideLength']
+        print(json_data['sideLength'])
+        size_m = float(json_data['sideLength'])
         if not os.path.exists(file_path):
             os.makedirs(file_path)
         if not os.path.exists(file_path+"/textures"):
