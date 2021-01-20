@@ -29,18 +29,21 @@ def generate():
 
         # Get cwd
         setdir = os.getcwd()
-
+        print("current dir: "+setdir)
         # Command line input
         model_name = json_data['model_name']
         file_path = "static/" + model_name
+        print(file_path)
         height_img_name = model_name+"_heightmap"
         aerial_img_name = model_name+"_aerial"
         print(json_data['sideLength'])
         size_m = float(json_data['sideLength'])
         if not os.path.exists(file_path):
             os.makedirs(file_path)
+            print("made model folder")
         if not os.path.exists(file_path+"/textures"):
             os.mkdir(file_path+"/textures")
+            print("made textures folder")
 
         max_alt = gen_terrain(file_path, height_img_name, aerial_img_name,
                               json_data['latitude'], json_data['longitude'], size_m)
