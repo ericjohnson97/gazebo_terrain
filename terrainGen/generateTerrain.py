@@ -61,10 +61,10 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     cv2.imwrite(path+'/textures/'+height_img_name+'.png', picarray)
     img = cv2.imread(path+'/textures/'+height_img_name+'.png')
     dim = (1025, 1025)
-
     im_big = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
-    blur = cv2.GaussianBlur(im_big, (501, 501), 0)
-    cv2.imwrite(path+'/textures/'+height_img_name+'.png', blur)
+    blur = cv2.GaussianBlur(im_big, (1001, 1001), 0)
+    blur90 = cv2.rotate(blur, cv2.cv2.ROTATE_90_CLOCKWISE) 
+    cv2.imwrite(path+'/textures/'+height_img_name+'.png', blur90)
 
     max_alt = maxnum-minnum
     print('height diff', max_alt)
@@ -78,6 +78,9 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     with open(path+"/textures/"+aerial_img_name+".png", 'wb') as f:
         f.write(resp.content)
 
+    aerial_img = cv2.imread(path+"/textures/"+aerial_img_name+".png")
+    aerial90 = cv2.rotate(aerial_img, cv2.cv2.ROTATE_90_CLOCKWISE) 
+    cv2.imwrite(path+"/textures/"+aerial_img_name+".png", aerial90)
     print(aerial_url)
 
     return max_alt

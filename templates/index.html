@@ -41,6 +41,20 @@
         <h3>Intelligent Quads Gazebo Terrain Generator <b>BETA</b></h3>
         <br>
         <div class="row">
+            <p>The Intelligent Quads Terrain Generator generates a gazebo model of a n x n meter square of
+                terrain. Simply position the bounding box around the desired terrain and click generate. The
+                website will generate a zipped gazebo model to be added to your gazebo models path. Enjoy!
+            </p>
+        </div>
+        <div class="row">
+            <div class="card col-md-6">
+                <img src="static/img/terrain_drone_sim.jpg" style="padding: 20px;">
+            </div>
+            <div class="card col-md-6">
+                <img src="static/img/wind_farm2.jpg" style="padding: 20px;">
+            </div>
+        </div>
+        <div class="row">
             <div class="card col-md-6">
                 <div class="card-body">
                     <div id="myMap" class="map"></div>
@@ -48,11 +62,10 @@
             </div>
             <div class="card col-md-6">
                 <div class="card-body">
-                    <p>The Intelligent Quads Terrain Generator generates a gazebo model of a 400 x 400 m square of
-                        terrain. Simply position the bounding box around the desired terrain and click generate. The
-                        website will generate a zipped gazebo model to be added to your gazebo models path. Enjoy!
-                    </p>
-
+                    
+                    <div class="row">
+                        <p id="lat_lon_text"></p>
+                    </div>
                     <div class="row">
                         <label class="col-sm-8">Box Side Length [m] </label>
                         <input class="col-sm-4 " id="sideLength">
@@ -65,19 +78,36 @@
                     <form onsubmit="return generate();">
 
                         <div class="row">
+                            
                             <label class="col-sm-8">Model Name </label>
                             <input class="col-sm-4 " id="modelName">
                             <div class="col-sm-6">
                                 <button type="submit">Generate</button>
                             </div>
+                            <img style="visibility:hidden;" id="loadingImg" src="static/img/loading.gif" height="50" />
+                            <br>
+                            <p>
+                                If you do not know where to add the model you can run the following command in your terminal to add the model to the path. 
+                            </p>
+                            <p>
+                                export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:(path to model) 
+                            </p>
+                            <p>
+                                launch gazebo and the model should show up in the models tab on the left
+                            </p>
 
-                        </div>
-
-
-                        <img style="visibility:hidden;" id="loadingImg" src="static/img/loading.gif" height="50" />
+                        
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="row" >
+            <div class="col-xl-12">
+                <p>If you got value out of this website consider donating to help support me making more content</p>
+                <a href="https://paypal.me/intelligentquads">
+                <img border="0" alt="W3Schools" src="static/img/paypal.jpeg">
+            </div>
+            
         </div>
 
     </div>
@@ -142,6 +172,7 @@
             bboxElon = location["longitude"];
             console.log(location)
             console.log("location lat", location["latitude"])
+            document.getElementById("lat_lon_text").innerHTML = "lat,lon: " + String(centerLat.toFixed(4)) + "," + String(centerLon.toFixed(4));
 
             var location = Microsoft.Maps.SpatialMath.getDestination(loc, 225, (width / 2) * Math.sqrt(2), Microsoft.Maps.SpatialMath.Meters)
             bboxSlat = location["latitude"];
