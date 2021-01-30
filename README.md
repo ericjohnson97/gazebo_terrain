@@ -10,3 +10,9 @@ This project utalizes a flask backend. the dependencies for the server can be in
 pip3 install --upgrade pip
 pip3 install -r requirements.txt
 ```
+
+To begin the application website, run app.py
+
+Test scripts available in test_scripts folder:
+1. model_gen.py - populates the Colorado model template in the templates folder in the root directory
+2. terrain.py - generates the model and textures folder within test_scripts directory

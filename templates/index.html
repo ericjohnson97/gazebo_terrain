@@ -48,16 +48,32 @@
             </div>
             <div class="card col-md-6">
                 <div class="card-body">
+                    <p>The Intelligent Quads Terrain Generator generates a gazebo model of a 400 x 400 m square of
+                        terrain. Simply position the bounding box around the desired terrain and click generate. The
+                        website will generate a zipped gazebo model to be added to your gazebo models path. Enjoy!
+                    </p>
+
+                    <div class="row">
+                        <label class="col-sm-8">Box Side Length [m] </label>
+                        <input class="col-sm-4 " id="sideLength">
+                        <div class="col-sm-6">
+                            <button onclick="setBBoxSize()">Set Bounding Box</button>
+                        </div>
+
+                    </div>
+                    <br>
                     <form onsubmit="return generate();">
-                        <p>The Intelligent Quads Terrain Generator generates a gazebo model of a 400 x 400 m square of
-                            terrain. Simply position the bounding box around the desired terrain and click generate. The
-                            website will generate a zipped gazebo model to be added to your gazebo models path. Enjoy!
-                        </p>
+
                         <div class="row">
                             <label class="col-sm-8">Model Name </label>
                             <input class="col-sm-4 " id="modelName">
+                            <div class="col-sm-6">
+                                <button type="submit">Generate</button>
+                            </div>
+
                         </div>
-                        <button type="submit">Generate</button>
+
+
                         <img style="visibility:hidden;" id="loadingImg" src="static/img/loading.gif" height="50" />
                     </form>
                 </div>
@@ -82,12 +98,16 @@
 <script type='text/javascript'>
     var map;
     var requestFile;
+    var mapSideLength = 400;
     function generate() {
         document.getElementById("loadingImg").style.visibility = 'visible';
         var center = map.getCenter();
         var modelName = document.getElementById("modelName").value;
         console.log(modelName)
-        jsonData = { "latitude": center["latitude"], "longitude": center["longitude"], "model_name": modelName }
+        jsonData = {
+            "latitude": center["latitude"], "longitude": center["longitude"], "model_name": modelName,
+            "sideLength": mapSideLength
+        }
         console.log("generating")
         $.ajax({
             type: "POST",
@@ -106,7 +126,13 @@
         })
         return false;
     }
-
+    function setBBoxSize() {
+        var center = map.getCenter();
+        console.log(center)
+        mapSideLength = Math.round(document.getElementById("sideLength").value)
+        updateBBox(center["latitude"], center["longitude"], length);
+        // return false;
+    }
     function updateBBox(centerLat, centerLon, width) {
         Microsoft.Maps.loadModule("Microsoft.Maps.SpatialMath", function () {
             console.log("getting location")
@@ -142,6 +168,7 @@
                         strokeThickness: 5
                     }
                 });
+                console.log(shape)
                 map.entities.clear();
                 //Add the shape to the map.
                 map.entities.push(shape);
@@ -151,6 +178,7 @@
     }
 
     function GetMap() {
+        console.log("get map")
         start_loc = [47.642, -122.128];
         map = new Microsoft.Maps.Map('#myMap', {
             credentials: "AvxKz2fJzNCdBerfw1sxxNGJjbsUQwxnnZL9oy_nrgIMSvQ9ta-6IWZGWuS7SVqm",
@@ -158,16 +186,16 @@
             center: new Microsoft.Maps.Location(start_loc[0], start_loc[1]),
             zoom: 15
         });
-        updateBBox(start_loc[0], start_loc[1], 400)
+        updateBBox(start_loc[0], start_loc[1], mapSideLength)
 
-        var width = 400;
         var bboxWlon = 0;
         var bboxElon = 0;
         var bboxNlat = 0;
         var bboxSlat = 0;
         Microsoft.Maps.Events.addHandler(map, 'viewchange', function (e) {
             var center = map.getCenter()
-            updateBBox(center["latitude"], center["longitude"], 400)
+            console.log(mapSideLength)
+            updateBBox(center["latitude"], center["longitude"], mapSideLength)
         });
 
     }
