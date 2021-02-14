@@ -146,7 +146,7 @@
             data: JSON.stringify(jsonData),
             success: function (data) {
                 console.log(data['filename'])
-                document.getElementById('download').href = 'static/' + data['filename']
+                document.getElementById('download').href = 'static/model/' + data['filename']
                 document.getElementById('download').click();
                 console.log("downloading")
                 document.getElementById("loadingImg").style.visibility = 'hidden';

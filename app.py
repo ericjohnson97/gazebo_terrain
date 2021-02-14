@@ -32,7 +32,7 @@ def generate():
         print("current dir: "+setdir)
         # Command line input
         model_name = json_data['model_name']
-        file_path = "static/" + model_name
+        file_path = "static/model/" + model_name
         print(file_path)
         height_img_name = model_name+"_heightmap"
         aerial_img_name = model_name+"_aerial"
@@ -66,7 +66,7 @@ def generate():
         write_sdf_file(model_name, height_img_name, aerial_img_name,
                        sdf_template, size_m, size_m, max_alt)
 
-        os.chdir(setdir+'/static')
+        os.chdir(setdir+'/static/model')
         # zip directory
         zipf = zipfile.ZipFile(model_name + '.zip', 'w', zipfile.ZIP_DEFLATED)
         zipdir(model_name, zipf)
@@ -80,8 +80,8 @@ def generate():
         os.chdir(setdir)
     print(setdir)
 
-    send_from_directory(setdir+'/static', model_name+'.zip')
-    # os.remove(setdir+'/static/'+model_name+'.zip')
+    send_from_directory(setdir+'/static/model', model_name+'.zip')
+    # os.remove(setdir+'static/model/'+model_name+'.zip')
     return json.dumps({'success': True, 'filename': model_name+'.zip'}), 200, {'ContentType': 'json'}
 
 def zipdir(path, ziph):

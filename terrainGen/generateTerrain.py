@@ -10,6 +10,7 @@ import sys
 
 
 def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m):
+    terrain_cfg_dict = {}
     ned_sw = [-size_m/2, -size_m/2, 0]
     ned_ne = [size_m/2, size_m/2, 0]
     print("ne", ned_ne)
@@ -47,7 +48,7 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     print('max num', maxnum)
     minnum = min(array)
     print('min num', minnum)
-
+    terrain_cfg_dict.append({"terrain_delta" : maxnum - minnum})
     counter = 0
     picarray = np.empty([res, res])
     for row in range(0, res):
@@ -74,6 +75,9 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     aerial_payload = {'mapArea': bbox, 'mapSize': '1025,1025', 'fmt': 'png',
                       'key': 'Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh'}
     resp = requests.get(aerial_url, params=aerial_payload)
+
+    with open(path+"/textures/terrain_cfg.json") as f:
+        f.write()
 
     with open(path+"/textures/"+aerial_img_name+".png", 'wb') as f:
         f.write(resp.content)
