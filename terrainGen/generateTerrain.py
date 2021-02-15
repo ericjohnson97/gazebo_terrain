@@ -7,9 +7,10 @@ import navpy
 import os
 import string
 import sys
+from shutil import copyfile
 
 
-def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m):
+def gen_terrain(path, model_name, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m):
     terrain_cfg_dict = {}
     ned_sw = [-size_m/2, -size_m/2, 0]
     ned_ne = [size_m/2, size_m/2, 0]
@@ -48,7 +49,12 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     print('max num', maxnum)
     minnum = min(array)
     print('min num', minnum)
-    terrain_cfg_dict.append({"terrain_delta" : maxnum - minnum})
+    terrain_cfg_dict["terrain_delta"] = int(maxnum - minnum)
+    terrain_cfg_dict["offset"] = int(minnum)
+    terrain_cfg_dict["latlon"] = [lat_ref, lon_ref]
+    terrain_cfg_dict["width"] = size_m
+    terrain_cfg_dict["model_name"] = model_name
+    print(terrain_cfg_dict)
     counter = 0
     picarray = np.empty([res, res])
     for row in range(0, res):
@@ -64,7 +70,7 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     dim = (1025, 1025)
     im_big = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
     blur = cv2.GaussianBlur(im_big, (501, 501), 0)
-    blur90 = cv2.rotate(blur, cv2.cv2.ROTATE_90_CLOCKWISE) 
+    blur90 = cv2.rotate(blur, cv2.cv2.ROTATE_90_CLOCKWISE)
     cv2.imwrite(path+'/textures/'+height_img_name+'.png', blur90)
 
     max_alt = maxnum-minnum
@@ -76,14 +82,16 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
                       'key': 'Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh'}
     resp = requests.get(aerial_url, params=aerial_payload)
 
-    with open(path+"/textures/terrain_cfg.json") as f:
-        f.write()
+    with open(path+"/textures/terrain_cfg.json", 'w') as f:
+        json.dump(terrain_cfg_dict, f)
+
+    copyfile('templates/llaGZxyz.py', path+"/textures/llaGZxyz.py")
 
     with open(path+"/textures/"+aerial_img_name+".png", 'wb') as f:
         f.write(resp.content)
 
     aerial_img = cv2.imread(path+"/textures/"+aerial_img_name+".png")
-    aerial90 = cv2.rotate(aerial_img, cv2.cv2.ROTATE_90_CLOCKWISE) 
+    aerial90 = cv2.rotate(aerial_img, cv2.cv2.ROTATE_90_CLOCKWISE)
     aerial90 = cv2.convertScaleAbs(aerial90, alpha=1.5, beta=0)
     cv2.imwrite(path+"/textures/"+aerial_img_name+".png", aerial90)
     print(aerial_url)

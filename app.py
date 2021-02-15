@@ -15,6 +15,7 @@ from terrainGen.generateTerrain import *
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     return render_template("index.html")
@@ -45,7 +46,7 @@ def generate():
             os.mkdir(file_path+"/textures")
             print("made textures folder")
 
-        max_alt = gen_terrain(file_path, height_img_name, aerial_img_name,
+        max_alt = gen_terrain(file_path, model_name, height_img_name, aerial_img_name,
                               json_data['latitude'], json_data['longitude'], size_m)
 
         # Change to templates directory
@@ -83,6 +84,7 @@ def generate():
     send_from_directory(setdir+'/static/model', model_name+'.zip')
     # os.remove(setdir+'static/model/'+model_name+'.zip')
     return json.dumps({'success': True, 'filename': model_name+'.zip'}), 200, {'ContentType': 'json'}
+
 
 def zipdir(path, ziph):
     print("ziping")
