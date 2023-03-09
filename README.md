@@ -21,7 +21,7 @@ pip3 install -r requirements.txt
 To run the website you will need to get a free bing maps API key. please go to https://www.microsoft.com/en-us/maps/choose-your-bing-maps-api to get started. Follow the scribe below to generate a key.
 
 
-<iframe src="https://scribehow.com/embed/Create_Bing_Maps_API_Key__hgDeWKEmTCCyFFbsVFyhAw" width="640" height="640" allowfullscreen frameborder="0"></iframe>
+https://scribehow.com/shared/Create_Bing_Maps_API_Key__hgDeWKEmTCCyFFbsVFyhAw
 
 Once you have your key, you will need to create a file called `api.json` in the config directory of the project. This file should have the following
 
