@@ -13,10 +13,10 @@ import os
 # define path to file 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-def read_api_key():
+def read_backend_api_key():
     with open(os.path.join(PATH,'../config/api.json'), 'r') as f:
         config_data = json.load(f)
-    return config_data['bing_maps_key']
+    return config_data['backend_bing_maps_key']
 
 def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m):
     ned_sw = [-size_m/2, -size_m/2, 0]
@@ -44,7 +44,7 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     response = http.request('GET', url)
 
     url = "http://dev.virtualearth.net/REST/v1/Elevation/Bounds"
-    key = read_api_key()
+    key = read_backend_api_key()
     payload = {'bounds': bbox,
                'rows': str(res), 'cols': str(res), 'heights': 'sealevel', 'key': key}
     resp = requests.get(url, params=payload)
@@ -82,7 +82,7 @@ def gen_terrain(path, height_img_name, aerial_img_name, lat_ref, lon_ref, size_m
     aerial_url = "https://dev.virtualearth.net/REST/v1/Imagery/Map/Aerial"
 
     aerial_payload = {'mapArea': bbox, 'mapSize': '1025,1025', 'fmt': 'png',
-                      'key': 'Ajp1x3U32EpQ0c8rngCiIUjfJeFCvnFDlp9hefsG2DuaLP8317j5Vs1qECcAqzEh'}
+                      'key': read_backend_api_key() }
     resp = requests.get(aerial_url, params=aerial_payload)
 
     with open(path+"/textures/"+aerial_img_name+".png", 'wb') as f:

@@ -22,3 +22,8 @@ $RECYCLE.BIN/
 # Operating System Files
 # =========================
 *.pyc
+lib
+lib64
+share
+bin
+pyvenv.cfg

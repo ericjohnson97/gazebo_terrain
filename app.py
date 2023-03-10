@@ -16,9 +16,14 @@ from terrainGen.generateTerrain import *
 app = Flask(__name__)
 
 
+def read_frontend_api_key():
+    with open('config/api.json', 'r') as f:
+        config_data = json.load(f)
+    return config_data['frontend_bing_maps_key']
+
 @app.route('/')
 def home():
-    return render_template("index.html", frontend_key=read_api_key())
+    return render_template("index.html", frontend_key=read_frontend_api_key())
 
 
 @app.route('/generate', methods=['GET', 'POST'])
